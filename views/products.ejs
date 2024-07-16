@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Products</title>
+    <style>
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product-form {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+        }
+
+        .product-form h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .product-form input {
+            /* width: 100%; */
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .product-form button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .product-form button:hover {
+            background-color: #45a049;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 15px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .card button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #ffa500;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background-color: #e69500;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .add-button {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .add-button:hover {
+            background-color: #1976d2;
+        }
+
+        .basket-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .basket-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/baskets">Baskets</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Products</h1>
+        <div class="product-form">
+            <h2>Add New Product</h2>
+            <form id="productForm">
+                <input type="text" name="name" placeholder="Product Name" required>
+                <input type="text" name="desc" placeholder="Description" required>
+                <input type="number" name="stock" placeholder="Stock" required>
+                <input type="text" name="category" placeholder="Category" required>
+                <input type="number" name="price" placeholder="Price" required>
+                <input type="text" name="imageUrl" placeholder="Image URL" required>
+                <button class="add-button" type="submit">Add Product</button>
+            </form>
+        </div>
+        <div class="product-list">
+            <% products.forEach(product => { %>
+                <div class="card">
+                    <h3><%= product.name %></h3>
+                    <p>Description: <%= product.desc %></p>
+                    <p>Stock: <%= product.stock %></p>
+                    <p>Category: <%= product.category %></p>
+                    <p>Price: $<%= product.price %></p>
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %> Image">
+                    <button class="edit-button" onclick="editProduct('<%= product.id %>')">Edit</button>
+                    <button class="delete-button" onclick="deleteProduct('<%= product.id %>')">Delete</button>
+                    <button class="add-button" onclick="addToFavorite('<%= product.id %>')">Add to Favorites</button>
+                    <button class="basket-button" onclick="addToBasket('<%= product.id %>')">Add to Basket</button>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector("#productForm").addEventListener("submit", async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.target)
+            const newProduct = {
+                name: formData.get("name"),
+                desc: formData.get("desc"),
+                stock: formData.get("stock"),
+                category: formData.get("category"),
+                price: formData.get("price"),
+                imageUrl: formData.get("imageUrl")
+            }
+
+            const response = await fetch("/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newProduct)
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to add product')
+            }
+        })
+
+        const deleteProduct = async (id) => {
+            const response = await fetch(`/products/${id}`, {
+                method: "DELETE"
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to delete product')
+            }
+        }
+
+        const addToFavorite = async (id) => {
+            const response = await fetch(`/products/add/${id}`, {
+                method: "GET"
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to add product to favorites')
+            }
+        }
+
+        const addToBasket = async (id) => {
+            const response = await fetch(`/products/basket/add/${id}`, {
+                method: "GET"
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to add product to basket')
+            }
+        }
+    </script>
+</body>
+</html>
