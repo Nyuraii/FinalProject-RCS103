@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites</title>
+    <style>
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .favorites-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 15px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .card button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/baskets">Baskets</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Favorites</h1>
+        <div class="favorites-list">
+            <% products.forEach(product => { %>
+                <div class="card">
+                    <h3><%= product.name %></h3>
+                    <p>Description: <%= product.desc %></p>
+                    <p>Stock: <%= product.stock %></p>
+                    <p>Category: <%= product.category %></p>
+                    <p>Price: $<%= product.price %></p>
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %> Image">
+                    <button class="delete-button" onclick="removeFromFavorite('<%= product.id %>')">Remove</button>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <script>
+        const removeFromFavorite = async (id) => {
+            const response = await fetch(`/favorites/remove/${id}`, {
+                method: "DELETE"
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to remove product from favorites')
+            }
+        }
+    </script>
+</body>
+</html>

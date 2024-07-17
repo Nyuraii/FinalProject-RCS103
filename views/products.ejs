@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Star Wars Bookstore</h1>
+        <ul>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+            <li><a href="/baskets">Basket</a></li>
+            <% if (user) { %>
+                <li><a href="/users/profile">Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/users">Users</a></li>
+                <% } %>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+                <li><a href="/users/register">Register</a></li>
+            <% } %>
+        </ul>
+    </div>
+    <div class="container">
+        <h1>Products</h1>
+        
+        <% if (user && user.username === 'admin') { %>
+            <h2>Add New Product</h2>
+            <form action="/admin/products" method="post" class="mb-4">
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" id="description" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" class="form-control" id="stock" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" class="form-control" id="category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="imageUrl">Image URL:</label>
+                    <input type="text" class="form-control" id="imageUrl" name="imageUrl" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Product</button>
+            </form>
+        <% } %>
+
+        <h2>Product List</h2>
+        <div class="row">
+            <% products.forEach(product => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.name %></h5>
+                            <p class="card-text">Description: <%= product.description %></p>
+                            <p class="card-text">Stock: <%= product.stock %></p>
+                            <p class="card-text">Category: <%= product.category %></p>
+                            <p class="card-text">Price: $<%= product.price %></p>
+                            <% if (user) { %>
+                                <form action="/products/add/<%= product.id %>" method="get" style="display:inline;">
+                                    <button type="submit" class="btn btn-secondary">Add to Favorites</button>
+                                </form>
+                                <form action="/products/basket/add/<%= product.id %>" method="get" style="display:inline;">
+                                    <button type="submit" class="btn btn-primary">Add to Basket</button>
+                                </form>
+                            <% } %>
+                            <% if (user && user.username === 'admin') { %>
+                                <form action="/admin/products/<%= product.id %>?_method=PUT" method="post" style="display:inline;">
+                                    <input type="text" name="name" value="<%= product.name %>" required class="form-control">
+                                    <input type="number" name="price" value="<%= product.price %>" required class="form-control">
+                                    <input type="text" name="imageUrl" value="<%= product.imageUrl %>" required class="form-control">
+                                    <button type="submit" class="btn btn-secondary">Edit</button>
+                                </form>
+                                <form action="/admin/products/<%= product.id %>?_method=DELETE" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

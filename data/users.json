@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1721207070625,
+    "email": "nuraygurbanova1@gmail.com",
+    "password": "$2a$08$Cdg1dPzgtJIBUdYKOZD/kO3M1ZrqqbALn4xxsVVVIF4oMnTw3TmHG",
+    "createdAt": "2024-07-17T09:04:30.625Z",
+    "updatedAt": "2024-07-17T09:04:30.625Z"
+  },
+  {
+    "id": 1721208785488,
+    "username": "admin",
+    "email": "admin@gmail.com",
+    "password": "$2a$08$B/mRMdGOjzIElkJexhiG7.Eq2fnp1oSHOErn9Uj0.nbVG0N9/NYxm",
+    "createdAt": "2024-07-17T09:33:05.488Z",
+    "updatedAt": "2024-07-17T09:33:05.488Z"
+  }
+]
