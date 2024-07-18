@@ -5,8 +5,14 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
 const adminAuth = require("./middleware/adminAuth");
+const connectDB = require('./config/mongoConnection'); // MongoDB connection
+//const handleTokenErrors = require('./middleware/handleTokenErrors');
+
 
 const app = express();
+
+// Connect to MongoDB
+connectDB();
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -25,6 +31,7 @@ app.use((req, res, next) => {
     res.locals.user = req.cookies.token ? jwt.verify(req.cookies.token, process.env.JWT_SECRET) : null;
     next();
 });
+
 
 app.get("/", (req, res) => {
     res.render("index");

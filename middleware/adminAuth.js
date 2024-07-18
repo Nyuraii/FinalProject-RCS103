@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const adminAuth = (req, res, next) => {
     const token = req.cookies.token;
+
     if (!token) {
-        return res.redirect('/users/login');
+        return res.status(401).json({ message: "Access denied" });
     }
 
     try {
@@ -12,10 +14,10 @@ const adminAuth = (req, res, next) => {
             req.user = decoded;
             next();
         } else {
-            res.redirect('/users/login');
+            res.status(403).json({ message: "Forbidden" });
         }
     } catch (err) {
-        res.redirect('/users/login');
+        res.status(401).json({ message: "Invalid token" });
     }
 };
 
