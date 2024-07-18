@@ -7,7 +7,7 @@ const auth = require("./middleware/auth");
 const adminAuth = require("./middleware/adminAuth");
 const connectDB = require('./config/mongoConnection'); // MongoDB connection
 //const handleTokenErrors = require('./middleware/handleTokenErrors');
-
+require('./config/mysqlConnection');
 
 const app = express();
 

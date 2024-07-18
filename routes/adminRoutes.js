@@ -2,74 +2,20 @@ const router = require("express").Router();
 const fs = require("fs");
 const adminAuth = require("../middleware/adminAuth");
 const User = require("../models/User");
+const { createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
 
-const readProducts = () => {
-    return JSON.parse(fs.readFileSync("./data/products.json"));
-};
 
-const writeProducts = (data) => {
-    fs.writeFileSync("./data/products.json", JSON.stringify(data, null, 2));
-};
-
-// const readUsers = () => {
-//     return JSON.parse(fs.readFileSync("./data/users.json"));
-// };
-
-// const writeUsers = (data) => {
-//     fs.writeFileSync("./data/users.json", JSON.stringify(data, null, 2));
-// };
 
 // Admin dashboard
 router.get("/", adminAuth, async (req, res) => {
-    const products = readProducts();
     const users = await User.find();
     res.render("admin", { products, users });
 });
 
 // Product management routes
-router.post("/products", adminAuth, (req, res) => {
-    const products = readProducts();
-    const uniqueId = new Date();
-    const date = new Date();
-    const newProduct = {
-        id: uniqueId.getTime(),
-        createdAt: date,
-        updatedAt: date,
-        ...req.body,
-    };
-    products.push(newProduct);
-    writeProducts(products);
-    res.status(201).json(newProduct);
-});
-
-router.put("/products/:id", adminAuth, (req, res) => {
-    const products = readProducts();
-    const index = products.findIndex(p => p.id == req.params.id);
-    if (index !== -1) {
-        const updatedProduct = {
-            ...products[index],
-            ...req.body,
-            updatedAt: new Date()
-        };
-        products[index] = updatedProduct;
-        writeProducts(products);
-        res.json(updatedProduct);
-    } else {
-        res.status(404).json({ message: "Product not found" });
-    }
-});
-
-router.delete("/products/:id", adminAuth, (req, res) => {
-    const products = readProducts();
-    const index = products.findIndex(p => p.id == req.params.id);
-    if (index !== -1) {
-        const deletedProduct = products.splice(index, 1);
-        writeProducts(products);
-        res.json(deletedProduct);
-    } else {
-        res.status(404).json({ message: "Product not found" });
-    }
-});
+router.post('/products', adminAuth, createProduct);
+router.put('/products/:id', adminAuth, updateProduct);
+router.delete('/products/:id', adminAuth, deleteProduct);
 
 // User management routes
 router.post("/users", adminAuth, async (req, res) => {
