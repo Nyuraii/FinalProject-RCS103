@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const fs = require("fs");
 const adminAuth = require("../middleware/adminAuth");
+const User = require("../models/User");
 
 const readProducts = () => {
     return JSON.parse(fs.readFileSync("./data/products.json"));
@@ -10,18 +11,18 @@ const writeProducts = (data) => {
     fs.writeFileSync("./data/products.json", JSON.stringify(data, null, 2));
 };
 
-const readUsers = () => {
-    return JSON.parse(fs.readFileSync("./data/users.json"));
-};
+// const readUsers = () => {
+//     return JSON.parse(fs.readFileSync("./data/users.json"));
+// };
 
-const writeUsers = (data) => {
-    fs.writeFileSync("./data/users.json", JSON.stringify(data, null, 2));
-};
+// const writeUsers = (data) => {
+//     fs.writeFileSync("./data/users.json", JSON.stringify(data, null, 2));
+// };
 
 // Admin dashboard
-router.get("/", adminAuth, (req, res) => {
+router.get("/", adminAuth, async (req, res) => {
     const products = readProducts();
-    const users = readUsers();
+    const users = await User.find();
     res.render("admin", { products, users });
 });
 
@@ -71,43 +72,43 @@ router.delete("/products/:id", adminAuth, (req, res) => {
 });
 
 // User management routes
-router.post("/users", adminAuth, (req, res) => {
-    const users = readUsers();
-    const uniqueId = new Date();
-    const newUser = {
-        id: uniqueId.getTime(),
-        ...req.body,
+router.post("/users", adminAuth, async (req, res) => {
+    const { username, email, password, role } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 8);
+    const newUser = new User({
+        username,
+        email,
+        password: hashedPassword,
+        role,
         createdAt: new Date(),
         updatedAt: new Date()
-    };
-    users.push(newUser);
-    writeUsers(users);
+    });
+    await newUser.save();
     res.status(201).json(newUser);
 });
 
-router.put("/users/:id", adminAuth, (req, res) => {
-    const users = readUsers();
-    const index = users.findIndex(u => u.id == req.params.id);
-    if (index !== -1) {
-        const updatedUser = {
-            ...users[index],
-            ...req.body,
+router.put("/users/:id", adminAuth, async (req, res) => {
+    const { username, email, role } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+            username,
+            email,
+            role,
             updatedAt: new Date()
-        };
-        users[index] = updatedUser;
-        writeUsers(users);
+        },
+        { new: true }
+    );
+    if (updatedUser) {
         res.json(updatedUser);
     } else {
         res.status(404).json({ message: "User not found" });
     }
 });
 
-router.delete("/users/:id", adminAuth, (req, res) => {
-    const users = readUsers();
-    const index = users.findIndex(u => u.id == req.params.id);
-    if (index !== -1) {
-        const deletedUser = users.splice(index, 1);
-        writeUsers(users);
+router.delete("/users/:id", adminAuth, async (req, res) => {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (deletedUser) {
         res.json(deletedUser);
     } else {
         res.status(404).json({ message: "User not found" });
