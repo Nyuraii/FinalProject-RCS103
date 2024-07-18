@@ -1,62 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Star Wars Bookstore</title>
-
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>Star Wars Bookstore</h1>
-            <nav>
-                <ul>
-                    <li><a href="/products">Products</a></li>
-                    <li><a href="/favorites">Favorites</a></li>
-                    <li><a href="/basket">Basket</a></li>
-                    <li><a href="/users">Users</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <section class="hero">
-            <h2>Welcome to the New Galaxy</h2>
-            
-        </section>
-       
-        <!-- <section>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Star_Wars_Logo.svg" alt="..." style="margin-left: 380px;">
-        </section> -->
-
-    </main>
-   
-</body>
-</html>
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Star Wars</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-    <nav>
+    <div class="navbar">
+        <h1>Star Wars Bookstore</h1>
         <ul>
             <li><a href="/products">Products</a></li>
-            <li><a href="/users">Users</a></li>
-            <li><a href="/baskets">Baskets</a></li>
             <li><a href="/favorites">Favorites</a></li>
+            <li><a href="/baskets">Basket</a></li>
+            <% if (user) { %>
+                <li><a href="/users/profile">Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/users">Users</a></li>
+                <% } %>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+                <li><a href="/users/register">Register</a></li>
+            <% } %>
         </ul>
-    </nav>
+    </div>
     <div class="container">
-        <h1>Welcome to the new Galaxy</h1>
+        <h2>Welcome to the New Galaxy</h2>
     </div>
 </body>
-</html> -->
+</html>

@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": 1720390951528,
+    "createdAt": "2024-07-07T22:22:31.528Z",
+    "updatedAt": "2024-07-07T22:22:31.528Z",
+    "name": "Attack of the Clones",
+    "desc": "Anakin's Rise",
+    "stock": "2",
+    "category": "book",
+    "price": "32",
+    "imageUrl": "https://m.media-amazon.com/images/I/71d+8kregyL._AC_UF1000,1000_QL80_.jpg"
+  }
+]
