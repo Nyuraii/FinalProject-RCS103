@@ -36,7 +36,7 @@ app.use("/favorites", favoriteRoutes);
 app.use("/baskets", basketRoutes);
 app.use("/admin", adminAuth, adminRoutes);
 
-const PORT = 3000;
+const PORT = 8000;
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
