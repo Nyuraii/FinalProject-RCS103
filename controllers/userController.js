@@ -52,4 +52,29 @@ const getAllUsers = async (req, res) => {
     res.render("users", { users });
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, getAllUsers };
+const updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { username, email, role } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { username, email, role, updatedAt: new Date() },
+        { new: true }
+    );
+    if (updatedUser) {
+        res.json(updatedUser);
+    } else {
+        res.status(404).json({ message: "User not found" });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    const { id } = req.params;
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (deletedUser) {
+        res.json(deletedUser);
+    } else {
+        res.status(404).json({ message: "User not found" });
+    }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, getAllUsers, updateUser, deleteUser };

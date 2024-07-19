@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/public/styles.css">
 </head>
 <body>
     <div class="navbar">
@@ -91,12 +91,12 @@
                         <td><%= user.username %></td>
                         <td><%= user.email %></td>
                         <td>
-                            <form action="/admin/users/<%= user.id %>?_method=PUT" method="post" style="display:inline;">
+                            <form action="/admin/users/<%= user._id %>?_method=PUT" method="post" style="display:inline;">
                                 <input type="text" name="username" value="<%= user.username %>" required class="form-control">
                                 <input type="email" name="email" value="<%= user.email %>" required class="form-control">
                                 <button type="submit" class="btn btn-secondary">Edit</button>
                             </form>
-                            <form action="/admin/users/<%= user.id %>?_method=DELETE" method="post" style="display:inline;">
+                            <form action="/admin/users/<%= user._id %>?_method=DELETE" method="post" style="display:inline;">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </td>

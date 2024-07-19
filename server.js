@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
 const adminAuth = require("./middleware/adminAuth");
 const connectDB = require('./config/mongoConnection'); // MongoDB connection
-//const handleTokenErrors = require('./middleware/handleTokenErrors');
+const methodOverride = require('method-override');
 require('./config/mysqlConnection');
 
 const app = express();
@@ -18,6 +18,7 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const productRoutes = require("./routes/productRoutes");
