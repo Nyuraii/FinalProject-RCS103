@@ -7,51 +7,57 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap" rel="stylesheet"> <!-- Google Font -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Press+Start+2P&display=swap');
+
         body {
-            background-color: #1C3A3E;
+            background-color: #112C33;
             color: #F0EADE;
-            font-family: 'Rubik 80s Fade', cursive;
+            font-family: 'Press Start 2P', cursive;
             margin: 0;
             padding: 0;
-            overflow: auto; 
+            overflow: auto; /* Ensure page is scrollable */
         }
 
-        .navbar {
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
             background-color: #4F1025;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Permanent Marker', cursive;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .navbar a {
+        nav ul li {
+            float: left;
+        }
+
+        nav ul li a {
+            display: block;
             color: #FCCC13;
+            text-align: center;
+            padding: 14px 16px;
             text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.5rem; 
-            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .navbar a:hover {
-            color: #f4c273;
+        nav ul li a:hover {
+            background-color: #960E1A;
         }
 
         .container {
             margin-top: 60px; /* Adjust for fixed navbar */
             padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            text-align: center;
         }
 
         .favorites-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            flex: 1;
         }
 
         .card {
@@ -76,14 +82,12 @@
             font-size: 1em;
             color: #333;
             margin-bottom: 10px;
-            font-family: 'Rubik 80s Fade', cursive;
         }
 
         .card p {
             font-size: 0.8em;
             color: #666;
             margin-bottom: 10px;
-            font-family: 'Rubik 80s Fade', cursive;
         }
 
         .card img {
@@ -92,70 +96,99 @@
             margin-bottom: 10px;
         }
 
+        .card form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card form input[type="number"] {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .basket-button,
         .delete-button {
             background: none;
             border: none;
             font-size: 1.2rem;
             cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .basket-button {
+            color: #007bff;
+        }
+
+        .basket-button:hover {
+            color: #0056b3;
+        }
+
+        .delete-button {
             color: #f44336;
         }
 
         .delete-button:hover {
             color: #d32f2f;
         }
-
-        .navbar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            background-color: #4F1025;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .navbar ul li {
-            float: left;
-        }
-
-        .navbar ul li a {
-            display: block;
-            color: #FCCC13;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .navbar ul li a:hover {
-            background-color: #960E1A;
-        }
     </style>
+    <script>
+        async function addToBasket(favoriteId, quantity) {
+            try {
+                const response = await fetch(`/baskets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ favoriteId, quantity }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Item added to basket');
+                } else {
+                    alert('Failed to add item to basket');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function removeFromFavorite(id) {
+            try {
+                const response = await fetch(`/favorites/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    document.getElementById(`favorite-item-${id}`).remove();
+                } else {
+                    alert('Failed to remove item from favorites');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
 </head>
 <body>
-    <div class="navbar">
-        <a href="/" style="color: #FCCC13; text-decoration: none;">
-            <h1 style="color: inherit;">Retro Movie Merchandise</h1>
-        </a>
+    <nav>
         <ul>
+            <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
             <% if (user) { %>
                 <li><a href="/favorites">Favorites</a></li>
                 <li><a href="/baskets">Basket</a></li>
                 <li><a href="/users/profile">Profile</a></li>
-                <li><a href="/users/logout">Logout</a></li>
                 <% if (user.username === 'admin') { %>
                     <li><a href="/admin">Admin</a></li>
                     <li><a href="/users">Users</a></li>
                 <% } %>
+                <li><a href="/users/logout">Logout</a></li>
             <% } else { %>
                 <li><a href="/users/login">Login</a></li>
-                <li><a href="/users/register">Register</a></li>
             <% } %>
         </ul>
-    </div>
+    </nav>
     <div class="container">
         <h1>Favorites</h1>
         <div class="favorites-list">
@@ -175,42 +208,6 @@
                 </div>
             <% }) %>
         </div>
-        
-
-        <script>
-        function addToBasket(favoriteId, quantity) {
-        fetch(`/baskets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ favoriteId, quantity }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Item added to basket');
-            } else {
-                alert('Failed to add item to basket');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-
-            function removeFromFavorite(id) {
-                fetch(`/favorites/${id}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById(`favorite-item-${id}`).remove();
-                    } else {
-                        alert('Failed to remove item from favorites');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        </script>
-        
+    </div>
+</body>
 </html>
