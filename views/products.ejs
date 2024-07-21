@@ -1,19 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/styles.css"> <!-- Adjust the path as needed -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .card-img-top {
-            height: 200px;
-            object-fit: cover;
+            height: 250px;
+            object-fit: contain;
+        }
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: #FCCC13;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #960E1A;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            color: #112C33;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Star Wars Bookstore</h1>
+        <h1>Retro Movie Merchandise</h1>
         <ul>
             <li><a href="/products">Products</a></li>
             <li><a href="/favorites">Favorites</a></li>

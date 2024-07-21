@@ -1,31 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Star Wars Bookstore</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Movie Merchandise</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #112C33;
+            color: #F0EADE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #4F1025;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .navbar a {
+            color: #FCCC13;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.5rem; 
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #f4c273;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: url('IMAGE_URL_HERE') no-repeat center center/cover; /* Replace IMAGE_URL_HERE */
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #E1DA55;
+            text-shadow: 2px 2px #4E5021;
+        }
+
+        .section {
+            margin: 2rem 0;
+        }
+
+        .section h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #f4c273;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: #4E5021;
+            color: #E6DBCE;
+            border: 1px solid #F1EFE2;
+            padding: 1rem;
+            margin: 1rem;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            transition: transform 0.3s;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-bottom: 2px solid #F1EFE2;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            color: #E1DA55;
+        }
+
+        footer {
+            background-color: #4F1025;
+            padding: 1rem;
+            text-align: center;
+            color: #F0EADE;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .footer-bottom {
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>Star Wars Bookstore</h1>
-        <ul>
-            <li><a href="/products">Products</a></li>
-            <li><a href="/favorites">Favorites</a></li>
-            <li><a href="/baskets">Basket</a></li>
-            <% if (user) { %>
-                <li><a href="/users/profile">Profile</a></li>
-                <li><a href="/users/logout">Logout</a></li>
-                <% if (user.username === 'admin') { %>
-                    <li><a href="/admin">Admin</a></li>
-                    <li><a href="/users">Users</a></li>
-                <% } %>
-            <% } else { %>
-                <li><a href="/users/login">Login</a></li>
-                <li><a href="/users/register">Register</a></li>
+    <nav class="navbar">
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/favorites">Favorites</a>
+        <a href="/basket">Basket</a>
+        <% if (user) { %>
+            <a href="/users/profile">Profile</a>
+            <a href="/users/logout">Logout</a>
+            <% if (user.username === 'admin') { %>
+                <a href="/admin">Admin</a>
+                <a href="/users">Users</a>
             <% } %>
-        </ul>
-    </div>
+        <% } else { %>
+            <a href="/users/login">Login</a>
+            <a href="/users/register">Register</a>
+        <% } %>
+    </nav>
     <div class="container">
-        <h2>Welcome to the New Galaxy</h2>
+        <div class="hero">
+            <h1>Welcome to Retro Movie Merchandise</h1>
+        </div>
+        <div class="section">
+            <h2>Featured Products</h2>
+            <div class="card">
+                <img src="https://s3.amazonaws.com/nightjarprod/content/uploads/sites/4/2018/07/09170404/breakfastclub_poster.jpg" alt="...">
+                <h3>The Breakfast Club</h3>
+                <p>Everyone is different.</p>
+            </div>
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/d/d2/Back_to_the_Future.jpg" alt="...">
+                <h3>Back to the Future</h3>
+                <p>If we can identify our mistakes and our limitations, we can correct them and improve ourselves.</p>
+            </div>
+            <div class="card">
+                <img src="https://images.moviesanywhere.com/34f4f25b50973b8fe2b197c8a8a6e3a5/1a9ea9c0-fb38-439b-977e-40b6fe52a006.jpg" alt="...">
+                <h3>E.T.</h3>
+                <p>Accepting others who are different.</p>
+            </div>
+
+        <div class="section">
+            <h2>About Us</h2>
+            <p>We specialize in selling iconic merchandise from the most beloved movies of the 80s and 90s. From classic action figures to rare collector's items, we have it all!</p>
+        </div>
     </div>
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Retro Movie Merchandise. All rights reserved.</p>
+            <p>Contact Us: info@retromoviemerchandise.com</p>
+        </div>
+    </footer>
 </body>
 </html>

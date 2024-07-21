@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const adminAuth = require("../middleware/adminAuth");
-const User = require("../models/User"); 
-const connection = require('../models/productModel'); 
+const User = require("../models/User");
+const connection = require('../config/mysqlConnection'); 
 const bcrypt = require('bcryptjs');
 const { createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
-const { updateUser, deleteUser } = require('../controllers/userController'); 
+const { updateUser, deleteUser, addUser } = require('../controllers/userController');
 
 // Admin dashboard
 router.get("/", adminAuth, async (req, res) => {
@@ -34,6 +34,7 @@ router.put('/products/:id', adminAuth, updateProduct);
 router.delete('/products/:id', adminAuth, deleteProduct);
 
 // User management routes
+router.post("/users", adminAuth, addUser);
 router.put("/users/:id", adminAuth, updateUser);
 router.delete("/users/:id", adminAuth, deleteUser);
 

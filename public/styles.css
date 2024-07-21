@@ -1,23 +1,27 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Retro font */
+    background-color: #F1EFE2; /* Light background color */
+    color: #112C33; /* Dark text color for contrast */
     margin: 0;
     padding: 0;
 }
 
 /* Navbar Styles */
 .navbar {
-    background-color: #343a40;
+    background-color: #4F1025; /* Deep red background for navbar */
     color: white;
     padding: 1rem;
+    font-family: 'Arial Black', Gadget, sans-serif; /* Bold font for navbar */
 }
 
 .navbar a {
-    color: white;
+    color: #FCCC13; /* Bright yellow for navbar links */
     text-decoration: none;
     padding: 0.5rem 1rem;
 }
+
+/* Container Styles */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -25,7 +29,8 @@ body {
 }
 
 h1, h2 {
-    color: #343a40;
+    color: #112C33; /* Dark color for headings */
+    font-family: 'Permanent Marker', cursive; /* Bold and impactful font */
 }
 
 /* Form Styles */
@@ -36,14 +41,16 @@ h1, h2 {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
+    color: #56887F; /* Soft green for labels */
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ced4da;
+    border: 1px solid #CED4DA;
     border-radius: 0.25rem;
+    background-color: #BFCCB8; /* Soft background for inputs */
 }
 
 /* Button Styles */
@@ -52,45 +59,74 @@ h1, h2 {
     border: none;
     border-radius: 0.25rem;
     cursor: pointer;
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Retro font */
 }
 
 .btn-primary {
-    background-color: #007bff;
+    background-color: #960E1A; /* Strong red */
     color: white;
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #56887F; /* Soft green */
     color: white;
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background-color: #4F1025; /* Deep red for danger buttons */
     color: white;
 }
 
 /* Card Styles */
+.featured-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between; /* Ensure space between cards */
+}
+
 .card {
-    border: 1px solid #ced4da;
+    border: 1px solid #CED4DA;
     border-radius: 0.25rem;
-    background-color: white;
+    background-color: #E6DBCE; /* Light card background */
+    margin-bottom: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    flex: 1 1 calc(33.333% - 1rem); /* Ensure at least 3 cards per row */
+    box-sizing: border-box;
 }
 
 .card img {
-    border-bottom: 1px solid #ced4da;
+    width: 100%;
+    height: auto;
+    max-width: 100%; /* Limit width to 100% */
+    max-height: 250px; /* Ensure images are not too large */
+    object-fit: contain; /* Ensure the image is fully visible */
+    border-bottom: 1px solid #CED4DA;
+    margin-bottom: 1rem;
 }
 
 .card-body {
     padding: 1rem;
+    text-align: center; /* Center-align text */
+    flex: 1; /* Ensure the body takes up remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card-title {
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    color: #4F1025; /* Deep red for title */
 }
 
 .card-text {
     margin-bottom: 0.5rem;
+    color: #112C33; /* Dark text for readability */
 }
 
 /* Table Styles */
@@ -102,11 +138,12 @@ table {
 
 table th,
 table td {
-    border: 1px solid #ced4da;
+    border: 1px solid #CED4DA;
     padding: 0.75rem;
     text-align: left;
 }
 
 table th {
-    background-color: #f1f1f1;
+    background-color: #960E1A; /* Strong red for headers */
+    color: white;
 }

@@ -77,4 +77,20 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, getAllUsers, updateUser, deleteUser };
+const addUser = async (req, res) => {
+    const { username, email, password } = req.body;
+
+    const userExists = await User.findOne({ $or: [{ email }, { username }] });
+
+    if (userExists) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 8);
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
+
+    res.json({ message: "User added successfully" });
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, getAllUsers, updateUser, deleteUser, addUser };

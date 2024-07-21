@@ -94,7 +94,7 @@
                     <p>Category: <%= favorite.category %></p>
                     <p>Price: $<%= favorite.price %></p>
                     <img src="<%= favorite.imageUrl %>" alt="<%= favorite.name %> Image">
-                    <button class="delete-button" onclick="removeFromFavorite('<%= favorite.id %>')">Remove</button>
+                    <button class="delete-button" onclick="removeFromFavorite('<%= favorite.favoriteId %>')">Remove</button>
                 </div>
             <% }) %>
         </div>
@@ -104,12 +104,12 @@
         const removeFromFavorite = async (id) => {
             const response = await fetch(`/favorites/${id}`, {
                 method: "DELETE"
-            })
+            });
 
             if (response.ok) {
-                window.location.reload()
+                window.location.reload();
             } else {
-                alert('Failed to remove product from favorites')
+                alert('Failed to remove product from favorites');
             }
         }
     </script>
