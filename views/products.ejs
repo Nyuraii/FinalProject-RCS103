@@ -15,7 +15,7 @@
             font-family: 'Rubik 80s Fade', cursive;
             margin: 0;
             padding: 0;
-            overflow: auto; /* Ensure page is scrollable */
+            overflow: auto;
         }
 
         nav ul {
@@ -141,6 +141,30 @@
             color: #d32f2f;
         }
 
+.card .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.heart-button,
+.basket-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 5px; 
+}
+
+.heart-button {
+    color: #ff0000;
+}
+
+.basket-button {
+    color: #007bff;
+}
+
+
         .form-group label {
             font-family: 'Rubik 80s Fade', cursive;
         }
@@ -192,16 +216,46 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
+
+        /* Pop-up styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f44336;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-align: center;
+            color: #fff;
+        }
+
+        .popup img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .popup .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
     <script>
         function showPopup() {
-            document.getElementById('popupForm').style.display = 'block';
-            document.querySelector('.overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+            setTimeout(closePopup, 3000); // Automatically close after 3 seconds
         }
 
         function closePopup() {
-            document.getElementById('popupForm').style.display = 'none';
-            document.querySelector('.overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -232,7 +286,7 @@
                 .catch(error => console.error('Error:', error));
             });
 
-            const deleteForms = document.querySelectorAll('.card form');
+            const deleteForms = document.querySelectorAll('.card form.delete-form');
             deleteForms.forEach(form => {
                 form.addEventListener('submit', event => {
                     event.preventDefault();
@@ -251,6 +305,52 @@
                     .catch(error => console.error('Error:', error));
                 });
             });
+
+            const favoriteForms = document.querySelectorAll('.card form.favorite-form');
+            favoriteForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const productId = form.action.split('/').pop();
+                    fetch(`/favorites/${productId}`, {
+                        method: 'POST',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '<p class="message">Product added to favorites</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+
+            const basketForms = document.querySelectorAll('.card form.basket-form');
+            basketForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    const productId = form.action.split('/').pop();
+                    const quantity = formData.get('quantity');
+                    fetch(`/baskets/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ quantity }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '<p class="message">Product added to basket</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
         });
     </script>
 </head>
@@ -258,17 +358,27 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <!-- <li><a href="/favorites">Favorites</a></li> -->
-            <!-- <li><a href="/baskets">Basket</a></li> -->
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
-            <li><a href="/admin">Admin</a></li>
+            <li><a href="/products">Products</a></li>
+            <% if (user) { %>
+                <li><a href="/favorites">Favorites</a></li>
+                <li><a href="/baskets">Basket</a></li>
+                <li><a href="/users/profile">Profile</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/users">Users</a></li>
+                <% } %>
+                <li><a href="/users/logout">Logout</a></li>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+            <% } %>
         </ul>
     </nav>
     <div class="container">
         <div class="header">
             <h1>Products</h1>
-            <button class="btn btn-primary" onclick="showPopup()">Add New Product</button>
+            <% if (user && user.username === 'admin') { %>
+                <button class="btn btn-primary" onclick="showPopupForm()">Add New Product</button>
+            <% } %>
         </div>
         <div id="message-container"></div>
         <div class="products-list">
@@ -280,18 +390,32 @@
                     <p>Category: <%= product.category %></p>
                     <p>Price: $<%= product.price %></p>
                     <img src="<%= product.imageUrl %>" alt="<%= product.name %> Image">
-                    <form class="delete-form" action="/admin/products/<%= product.id %>?_method=DELETE" method="post">
-                        <button type="submit" class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                    </form>
+                    <% if (user) { %>
+                        <div class="actions">
+                            <form class="favorite-form" action="/favorites/<%= product.id %>" method="post" style="display:inline;">
+                                <button type="submit" class="heart-button"><i class="fas fa-heart"></i></button>
+                            </form>
+                            <form class="basket-form" action="/baskets/<%= product.id %>" method="post" style="display:inline;">
+                                <input type="number" name="quantity" value="1" min="1" required>
+                                <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
+                            </form>
+                        </div>
+                        
+                    <% } %>
+                    <% if (user && user.username === 'admin') { %>
+                        <form class="delete-form" action="/admin/products/<%= product.id %>?_method=DELETE" method="post" style="display:inline;">
+                            <button type="submit" class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    <% } %>
                 </div>
             <% }) %>
         </div>
     </div>
 
-    <div class="overlay" onclick="closePopup()"></div>
+    <div class="overlay" onclick="closePopupForm()"></div>
 
     <div class="popup-form" id="popupForm">
-        <button class="close-btn" onclick="closePopup()">&times;</button>
+        <button class="close-btn" onclick="closePopupForm()">&times;</button>
         <h2>Add New Product</h2>
         <form action="/admin/products" method="post">
             <div class="form-group">

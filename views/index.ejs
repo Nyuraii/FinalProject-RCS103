@@ -276,5 +276,21 @@
             <p>Contact Us: info@retromoviemerchandise.com</p>
         </div>
     </footer>
+   
+    <script>
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+            setTimeout(closePopup, 3000); // Automatically close after 3 seconds
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Show the pop-up if there's an error message
+         if (typeof error !== 'undefined' && error) { 
+            showPopup();
+       } 
+    </script>
 </body>
 </html>

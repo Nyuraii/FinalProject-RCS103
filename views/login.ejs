@@ -97,13 +97,45 @@
             z-index: 1; /* Behind the container */
             opacity: 0.2; /* Adjust the visibility */
         }
+
+ 
+        .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f44336;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.536);
+    z-index: 1000;
+    text-align: center;
+    color: #fff;
+}
+
+.popup img {
+    width: 500px; 
+    height: 300px; 
+    margin-bottom: 10px;
+}
+
+.popup .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #FCCC13;
+}
     </style>
 </head>
 <body>
     <div class="background-gif"></div>
     <div class="container">
         <h1>Login</h1>
-        <form action="/users/login" method="post">
+        <form id="loginForm">
             <label for="identifier">Username or Email:</label>
             <input type="text" id="identifier" name="identifier" required>
             <label for="password">Password:</label>
@@ -113,5 +145,47 @@
         <p>Don't have an account? <a href="/users/register">Register here</a></p>
         <a href="/" class="back-home">Return to Homepage</a>
     </div>
+
+    <!-- Pop-up for Invalid Credentials -->
+    <div class="popup" id="popup">
+        <img src="https://i.imgur.com/9i2Ypq6.gif" alt="Invalid Credentials">
+        <p>Invalid Credentials</p>
+        <button class="close-btn" onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+            setTimeout(closePopup, 10000); 
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const loginData = {};
+            formData.forEach((value, key) => {
+                loginData[key] = value;
+            });
+
+            const response = await fetch('/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            });
+
+            const data = await response.json();
+            if (response.status === 200) {
+                window.location.href = data.redirect;
+            } else {
+                showPopup();
+            }
+        });
+    </script>
 </body>
 </html>

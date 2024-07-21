@@ -33,13 +33,8 @@ const loginUser = async (req, res) => {
 
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    if (user.username === 'admin' && bcrypt.compareSync(password, 'salam123')) {
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/admin');
-    } else {
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/');
-    }
+    res.cookie('token', token, { httpOnly: true });
+    res.status(200).json({ message: "Login successful", redirect: user.username === 'admin' ? '/admin' : '/' });
 };
 
 const getUserProfile = async (req, res) => {

@@ -201,7 +201,7 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
-            <!-- <li><a href="/users">Users</a></li> -->
+            <li><a href="/users">Users</a></li>
             <li><a href="/baskets">Baskets</a></li>
             <li><a href="/favorites">Favorites</a></li>
         </ul>
@@ -211,7 +211,7 @@
             <% let totalCount = 0; let totalPrice = 0; %>
             <% baskets.forEach(basket => { %>
                 <% totalCount += basket.quantity; totalPrice += basket.price * basket.quantity; %>
-                <div class="card">
+                <div class="card" id="basket-item-<%= basket.basketId %>">
                     <h3><%= basket.name %></h3>
                     <p>Description: <%= basket.description %></p>
                     <p>Stock: <%= basket.stock %></p>
@@ -219,7 +219,7 @@
                     <p>Price: $<%= basket.price %></p>
                     <p>Quantity: <%= basket.quantity %></p>
                     <img src="<%= basket.imageUrl %>" alt="<%= basket.name %> Image">
-                    <form action="/baskets/<%= basket.id %>" method="post">
+                    <form onsubmit="event.preventDefault(); removeFromBasket('<%= basket.basketId %>');">
                         <input type="number" name="quantity" value="<%= basket.quantity %>" min="1" required>
                         <button type="submit" class="update-button"><i class="fas fa-check"></i></button>
                         <button type="button" class="delete-button" onclick="removeFromBasket('<%= basket.basketId %>')"><i class="fas fa-trash-alt"></i></button>
@@ -227,6 +227,7 @@
                 </div>
             <% }) %>
         </div>
+        
         <div class="summary">
             <div class="gif-container">
                 <img src="/200w-unscreen.gif" alt="Car GIF">
@@ -237,18 +238,19 @@
             <button class="checkout-button">Proceed to Checkout</button>
         </div>
     </div>
-
     <script>
-        const removeFromBasket = async (id) => {
-            const response = await fetch(`/baskets/${id}`, {
-                method: "DELETE"
-            });
-
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Failed to remove product from basket');
-            }
+        function removeFromBasket(id) {
+            fetch(`/baskets/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById(`basket-item-${id}`).remove();
+                } else {
+                    alert('Failed to remove item from basket');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </body>

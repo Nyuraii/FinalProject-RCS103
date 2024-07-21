@@ -15,7 +15,7 @@
             font-family: 'Rubik 80s Fade', cursive;
             margin: 0;
             padding: 0;
-            overflow: auto; /* Ensure page is scrollable */
+            overflow: auto; 
         }
 
         .navbar {
@@ -133,74 +133,84 @@
             background-color: #960E1A;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const basketForms = document.querySelectorAll('.basket-form');
-            basketForms.forEach(form => {
-                form.addEventListener('submit', event => {
-                    event.preventDefault();
-                    const productId = form.dataset.productId;
-                    const quantity = form.querySelector('input[name="quantity"]').value;
-                    fetch(`/baskets/${productId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ quantity }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const messageContainer = document.getElementById('message-container');
-                        messageContainer.innerHTML = '<p class="message">Item added to basket</p>';
-                    })
-                    .catch(error => console.error('Error:', error));
-                });
-            });
-        });
-
-        const removeFromFavorite = async (id) => {
-            const response = await fetch(`/favorites/${id}`, {
-                method: "DELETE"
-            });
-
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Failed to remove product from favorites');
-            }
-        }
-    </script>
 </head>
 <body>
-    <nav>
+    <div class="navbar">
+        <a href="/" style="color: #FCCC13; text-decoration: none;">
+            <h1 style="color: inherit;">Retro Movie Merchandise</h1>
+        </a>
         <ul>
-            <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
-            <li><a href="/users">Users</a></li>
-            <li><a href="/baskets">Baskets</a></li>
-            <li><a href="/favorites">Favorites</a></li>
+            <% if (user) { %>
+                <li><a href="/favorites">Favorites</a></li>
+                <li><a href="/baskets">Basket</a></li>
+                <li><a href="/users/profile">Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/users">Users</a></li>
+                <% } %>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+                <li><a href="/users/register">Register</a></li>
+            <% } %>
         </ul>
-    </nav>
+    </div>
     <div class="container">
         <h1>Favorites</h1>
-        <div id="message-container"></div>
         <div class="favorites-list">
             <% favorites.forEach(favorite => { %>
-                <div class="card">
+                <div class="card" id="favorite-item-<%= favorite.favoriteId %>">
                     <h3><%= favorite.name %></h3>
                     <p>Description: <%= favorite.description %></p>
                     <p>Stock: <%= favorite.stock %></p>
                     <p>Category: <%= favorite.category %></p>
                     <p>Price: $<%= favorite.price %></p>
                     <img src="<%= favorite.imageUrl %>" alt="<%= favorite.name %> Image">
-                    <form class="basket-form" data-product-id="<%= favorite.id %>" style="display:inline;">
-                        <input type="number" name="quantity" value="1" min="1" required>
+                    <form onsubmit="event.preventDefault(); addToBasket('<%= favorite.favoriteId %>', document.getElementById('quantity-<%= favorite.favoriteId %>').value);">
+                        <input type="number" id="quantity-<%= favorite.favoriteId %>" name="quantity" value="1" min="1" required>
                         <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
                         <button type="button" class="delete-button" onclick="removeFromFavorite('<%= favorite.favoriteId %>')"><i class="fas fa-trash-alt"></i></button>
                     </form>
                 </div>
             <% }) %>
         </div>
-    </div>
-</body>
+        
+
+        <script>
+        function addToBasket(favoriteId, quantity) {
+        fetch(`/baskets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ favoriteId, quantity }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Item added to basket');
+            } else {
+                alert('Failed to add item to basket');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+
+            function removeFromFavorite(id) {
+                fetch(`/favorites/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById(`favorite-item-${id}`).remove();
+                    } else {
+                        alert('Failed to remove item from favorites');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+        
 </html>
