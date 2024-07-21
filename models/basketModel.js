@@ -19,6 +19,5 @@ const createBasketTable = () => {
   });
 };
 
-createBasketTable();
 
-module.exports = connection;
+module.exports = createBasketTable;

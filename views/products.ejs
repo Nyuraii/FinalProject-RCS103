@@ -36,7 +36,7 @@
         
         <% if (user && user.username === 'admin') { %>
             <h2>Add New Product</h2>
-            <form action="/admin/products" method="post" class="mb-4">
+            <form action="/products" method="post" class="mb-4">
                 <div class="form-group">
                     <label for="name">Product Name:</label>
                     <input type="text" class="form-control" id="name" name="name" required>
@@ -78,10 +78,11 @@
                             <p class="card-text">Category: <%= product.category %></p>
                             <p class="card-text">Price: $<%= product.price %></p>
                             <% if (user) { %>
-                                <form action="/products/add/<%= product.id %>" method="get" style="display:inline;">
+                                <form action="/favorites/<%= product.id %>" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-secondary">Add to Favorites</button>
                                 </form>
-                                <form action="/products/basket/add/<%= product.id %>" method="get" style="display:inline;">
+                                <form action="/baskets/<%= product.id %>" method="post" style="display:inline;">
+                                    <input type="number" name="quantity" value="1" min="1" required>
                                     <button type="submit" class="btn btn-primary">Add to Basket</button>
                                 </form>
                             <% } %>

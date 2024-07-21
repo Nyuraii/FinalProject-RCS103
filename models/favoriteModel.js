@@ -18,6 +18,6 @@ const createFavoriteTable = () => {
   });
 };
 
-createFavoriteTable();
 
-module.exports = connection;
+
+module.exports = createFavoriteTable;

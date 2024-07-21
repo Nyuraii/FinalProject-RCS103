@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Favorites</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .container {
             padding: 20px;
@@ -84,15 +86,15 @@
     <div class="container">
         <h1>Favorites</h1>
         <div class="favorites-list">
-            <% products.forEach(product => { %>
+            <% favorites.forEach(favorite => { %>
                 <div class="card">
-                    <h3><%= product.name %></h3>
-                    <p>Description: <%= product.desc %></p>
-                    <p>Stock: <%= product.stock %></p>
-                    <p>Category: <%= product.category %></p>
-                    <p>Price: $<%= product.price %></p>
-                    <img src="<%= product.imageUrl %>" alt="<%= product.name %> Image">
-                    <button class="delete-button" onclick="removeFromFavorite('<%= product.id %>')">Remove</button>
+                    <h3><%= favorite.name %></h3>
+                    <p>Description: <%= favorite.description %></p>
+                    <p>Stock: <%= favorite.stock %></p>
+                    <p>Category: <%= favorite.category %></p>
+                    <p>Price: $<%= favorite.price %></p>
+                    <img src="<%= favorite.imageUrl %>" alt="<%= favorite.name %> Image">
+                    <button class="delete-button" onclick="removeFromFavorite('<%= favorite.id %>')">Remove</button>
                 </div>
             <% }) %>
         </div>
@@ -100,7 +102,7 @@
 
     <script>
         const removeFromFavorite = async (id) => {
-            const response = await fetch(`/favorites/remove/${id}`, {
+            const response = await fetch(`/favorites/${id}`, {
                 method: "DELETE"
             })
 

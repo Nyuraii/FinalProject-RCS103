@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basket</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .container {
             padding: 20px;
@@ -84,10 +86,10 @@
     <div class="container">
         <h1>Basket</h1>
         <div class="basket-list">
-            <% basket.forEach(product => { %>
+            <% baskets.forEach(product => { %>
                 <div class="card">
                     <h3><%= product.name %></h3>
-                    <p>Description: <%= product.desc %></p>
+                    <p>Description: <%= product.description %></p>
                     <p>Stock: <%= product.stock %></p>
                     <p>Category: <%= product.category %></p>
                     <p>Price: $<%= product.price %></p>
@@ -100,7 +102,7 @@
 
     <script>
         const removeFromBasket = async (id) => {
-            const response = await fetch(`/baskets/remove/${id}`, {
+            const response = await fetch(`/baskets/${id}`, {
                 method: "DELETE"
             })
 

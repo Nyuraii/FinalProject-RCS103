@@ -1,19 +1,20 @@
-const connection = require('../models/favoriteModel');
+const connection = require('../config/mysqlConnection'); 
+
 
 const getFavorites = (req, res) => {
-  const { userId } = req.user;
-  connection.query('SELECT * FROM favorites WHERE userId = ?', [userId], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
+    const { _id } = req.user;
+    connection.query('SELECT * FROM favorites WHERE userId = ?', [_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.render('favorites', { favorites: results, user: res.locals.user });
+    });
 };
 
 const addFavorite = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user; // Use MongoDB user ID
   const { productId } = req.params;
-  connection.query('INSERT INTO favorites (userId, productId) VALUES (?, ?)', [userId, productId], (err, results) => {
+  connection.query('INSERT INTO favorites (userId, productId) VALUES (?, ?)', [_id, productId], (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -22,9 +23,9 @@ const addFavorite = (req, res) => {
 };
 
 const removeFavorite = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user; // Use MongoDB user ID
   const { productId } = req.params;
-  connection.query('DELETE FROM favorites WHERE userId = ? AND productId = ?', [userId, productId], (err, results) => {
+  connection.query('DELETE FROM favorites WHERE userId = ? AND productId = ?', [_id, productId], (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }

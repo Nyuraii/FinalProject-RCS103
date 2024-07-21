@@ -22,6 +22,6 @@ const createProductTable = () => {
   });
 };
 
-createProductTable();
 
-module.exports = connection;
+
+module.exports = createProductTable;
