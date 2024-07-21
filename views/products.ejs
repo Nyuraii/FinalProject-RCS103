@@ -4,27 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="/styles.css"> 
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap" rel="stylesheet"> <!-- Google Font -->
     <style>
-        .card-img-top {
-            height: 250px;
-            object-fit: contain;
-        }
-        .navbar ul {
-            list-style-type: none;
+        body {
+            background-color: #1C3A3E;
+            color: #F0EADE;
+            font-family: 'Rubik 80s Fade', cursive;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            background-color: #4F1025;
+            overflow: auto; /* Ensure page is scrollable */
         }
 
-        .navbar li {
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        nav ul li {
             float: left;
         }
 
-        .navbar li a {
+        nav ul li a {
             display: block;
             color: #FCCC13;
             text-align: center;
@@ -32,79 +43,210 @@
             text-decoration: none;
         }
 
-        .navbar li a:hover {
+        nav ul li a:hover {
             background-color: #960E1A;
         }
 
         .container {
-            margin-top: 20px;
+            margin-top: 70px; /* Adjust for fixed navbar */
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         h1, h2 {
-            color: #112C33;
+            font-family: 'Rubik 80s Fade', cursive;
+            color: #FCCC13;
         }
-        
-        .heart-button {
+
+        .products-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .card form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card form input[type="number"] {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .update-button,
+        .delete-button {
             background: none;
             border: none;
-            color: #ff0000;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .update-button {
+            color: #28a745;
+        }
+
+        .update-button:hover {
+            color: #218838;
+        }
+
+        .delete-button {
+            color: #f44336;
+        }
+
+        .delete-button:hover {
+            color: #d32f2f;
+        }
+
+        .form-group label {
+            font-family: 'Rubik 80s Fade', cursive;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .popup-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(236, 142, 18, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            width: 400px;
+        }
+
+        .popup-form .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
             cursor: pointer;
         }
 
-        .basket-button {
-            background: none;
-            border: none;
-            color: #007bff;
-            font-size: 1.5rem;
-            cursor: pointer;
+        .popup-form .close-btn:hover {
+            color: #f44336;
         }
 
-        .message {
-            color: green;
-            font-weight: bold;
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
         }
     </style>
     <script>
+        function showPopup() {
+            document.getElementById('popupForm').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popupForm').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const favoriteForms = document.querySelectorAll('.favorite-form');
-            favoriteForms.forEach(form => {
-                form.addEventListener('submit', event => {
-                    event.preventDefault();
-                    const productId = form.dataset.productId;
-                    fetch(`/favorites/${productId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({}),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const messageContainer = document.getElementById('message-container');
-                        messageContainer.innerHTML = '';
-                    })
-                    .catch(error => console.error('Error:', error));
+            const productForm = document.querySelector('.popup-form form');
+            productForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const formData = new FormData(productForm);
+                const productData = {};
+                formData.forEach((value, key) => {
+                    productData[key] = value;
                 });
+                fetch('/admin/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = '<p class="message">Product added successfully</p>';
+                    closePopup();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+                .catch(error => console.error('Error:', error));
             });
 
-            const basketForms = document.querySelectorAll('.basket-form');
-            basketForms.forEach(form => {
+            const deleteForms = document.querySelectorAll('.card form');
+            deleteForms.forEach(form => {
                 form.addEventListener('submit', event => {
                     event.preventDefault();
-                    const productId = form.dataset.productId;
-                    const quantity = form.querySelector('input[name="quantity"]').value;
-                    fetch(`/baskets/${productId}`, {
+                    const productId = form.action.split('/').pop().split('?')[0];
+                    fetch(`/admin/products/${productId}?_method=DELETE`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ quantity }),
                     })
                     .then(response => response.json())
                     .then(data => {
                         const messageContainer = document.getElementById('message-container');
-                        messageContainer.innerHTML = '';
+                        messageContainer.innerHTML = '<p class="message">Product deleted successfully</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     })
                     .catch(error => console.error('Error:', error));
                 });
@@ -113,99 +255,71 @@
     </script>
 </head>
 <body>
-    <div class="navbar">
-        <a href="/" style="color: #FCCC13; text-decoration: none;">
-            <h1 style="color: inherit;">Retro Movie Merchandise</h1>
-        </a>
+    <nav>
         <ul>
-            <li><a href="/products">Products</a></li>
-            <% if (user) { %>
-                <li><a href="/favorites">Favorites</a></li>
-                <li><a href="/baskets">Basket</a></li>
-                <li><a href="/users/profile">Profile</a></li>
-                <li><a href="/users/logout">Logout</a></li>
-                <% if (user.username === 'admin') { %>
-                    <li><a href="/admin">Admin</a></li>
-                    <li><a href="/users">Users</a></li>
-                <% } %>
-            <% } else { %>
-                <li><a href="/users/login">Login</a></li>
-                <li><a href="/users/register">Register</a></li>
-            <% } %>
+            <li><a href="/">Home</a></li>
+            <!-- <li><a href="/favorites">Favorites</a></li> -->
+            <!-- <li><a href="/baskets">Basket</a></li> -->
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/admin">Admin</a></li>
         </ul>
-    </div>
+    </nav>
     <div class="container">
-        <h1>Products</h1>
-        
-        <% if (user && user.username === 'admin') { %>
-            <h2>Add New Product</h2>
-            <form action="/products" method="post" class="mb-4">
-                <div class="form-group">
-                    <label for="name">Product Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <input type="text" class="form-control" id="description" name="description" required>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Stock:</label>
-                    <input type="number" class="form-control" id="stock" name="stock" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category:</label>
-                    <input type="text" class="form-control" id="category" name="category" required>
-                </div>
-                <div class="form-group">
-                    <label for="price">Price:</label>
-                    <input type="number" class="form-control" id="price" name="price" required>
-                </div>
-                <div class="form-group">
-                    <label for="imageUrl">Image URL:</label>
-                    <input type="text" class="form-control" id="imageUrl" name="imageUrl" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Product</button>
-            </form>
-        <% } %>
-
-        <h2>Product List</h2>
-        <div class="row">
-            <div id="message-container"></div>
-            <% products.forEach(product => { %>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= product.name %></h5>
-                            <p class="card-text">Description: <%= product.description %></p>
-                            <p class="card-text">Stock: <%= product.stock %></p>
-                            <p class="card-text">Category: <%= product.category %></p>
-                            <p class="card-text">Price: $<%= product.price %></p>
-                            <% if (user) { %>
-                                <form class="favorite-form" data-product-id="<%= product.id %>" style="display:inline;">
-                                    <button type="submit" class="heart-button"><i class="fas fa-heart"></i></button>
-                                </form>
-                                <form class="basket-form" data-product-id="<%= product.id %>" style="display:inline;">
-                                    <input type="number" name="quantity" value="1" min="1" required>
-                                    <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
-                                </form>
-                            <% } %>
-                            <% if (user && user.username === 'admin') { %>
-                                <form action="/admin/products/<%= product.id %>?_method=PUT" method="post" style="display:inline;">
-                                    <input type="text" name="name" value="<%= product.name %>" required class="form-control">
-                                    <input type="number" name="price" value="<%= product.price %>" required class="form-control">
-                                    <input type="text" name="imageUrl" value="<%= product.imageUrl %>" required class="form-control">
-                                    <button type="submit" class="btn btn-secondary">Edit</button>
-                                </form>
-                                <form action="/admin/products/<%= product.id %>?_method=DELETE" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            <% }); %>
+        <div class="header">
+            <h1>Products</h1>
+            <button class="btn btn-primary" onclick="showPopup()">Add New Product</button>
         </div>
+        <div id="message-container"></div>
+        <div class="products-list">
+            <% products.forEach(product => { %>
+                <div class="card">
+                    <h3><%= product.name %></h3>
+                    <p>Description: <%= product.description %></p>
+                    <p>Stock: <%= product.stock %></p>
+                    <p>Category: <%= product.category %></p>
+                    <p>Price: $<%= product.price %></p>
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %> Image">
+                    <form class="delete-form" action="/admin/products/<%= product.id %>?_method=DELETE" method="post">
+                        <button type="submit" class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <div class="overlay" onclick="closePopup()"></div>
+
+    <div class="popup-form" id="popupForm">
+        <button class="close-btn" onclick="closePopup()">&times;</button>
+        <h2>Add New Product</h2>
+        <form action="/admin/products" method="post">
+            <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" class="form-control" id="description" name="description" required>
+            </div>
+            <div class="form-group">
+                <label for="stock">Stock:</label>
+                <input type="number" class="form-control" id="stock" name="stock" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <input type="text" class="form-control" id="category" name="category" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="imageUrl">Image URL:</label>
+                <input type="text" class="form-control" id="imageUrl" name="imageUrl" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
     </div>
 </body>
 </html>

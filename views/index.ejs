@@ -26,11 +26,22 @@
             font-family: 'Permanent Marker', cursive;
         }
 
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar li {
+            margin-right: 10px;
+        }
+
         .navbar a {
             color: #FCCC13;
             text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.5rem; 
+            margin: 0 10px;
+            font-size: 1.2rem;
             transition: color 0.3s ease, transform 0.3s ease;
         }
 
@@ -128,7 +139,7 @@
                 <li><a href="/users/logout">Logout</a></li>
                 <% if (user.username === 'admin') { %>
                     <li><a href="/admin">Admin</a></li>
-                    <li><a href="/users">Users</a></li>
+                    <!-- <li><a href="/users">Users</a></li> -->
                 <% } %>
             <% } else { %>
                 <li><a href="/users/login">Login</a></li>

@@ -6,42 +6,89 @@
     <title>Basket</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
     <style>
-        .container {
-            padding: 20px;
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #1C3A3E;
+            color: #F0EADE;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 0;
+            overflow: auto; /* Ensure page is scrollable */
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        nav ul li {
+            float: left;
+        }
+
+        nav ul li a {
+            display: block;
+            color: #FCCC13;
             text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            background-color: #960E1A;
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust for fixed navbar */
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
         .basket-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            flex: 1;
         }
 
         .card {
-            background-color: #fff;
-            border: 1px solid #ccc;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
             border-radius: 10px;
             margin: 15px;
             padding: 20px;
             width: 250px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: left;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
 
         .card:hover {
             transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         .card h3 {
-            font-size: 1.2em;
+            font-size: 1em;
             color: #333;
             margin-bottom: 10px;
         }
 
         .card p {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #666;
             margin-bottom: 10px;
         }
@@ -52,24 +99,100 @@
             margin-bottom: 10px;
         }
 
-        .card button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 1em;
+        .card form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card form input[type="number"] {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .update-button,
+        .delete-button {
+            background: none;
             border: none;
-            border-radius: 5px;
+            font-size: 1.2rem;
             cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .update-button {
+            color: #28a745;
+        }
+
+        .update-button:hover {
+            color: #218838;
         }
 
         .delete-button {
-            background-color: #f44336;
-            color: white;
+            color: #f44336;
         }
 
         .delete-button:hover {
-            background-color: #d32f2f;
+            color: #d32f2f;
+        }
+
+        .summary {
+            background-color: rgba(28, 58, 62, 0.8); /* Slightly transparent background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            max-width: 400px;
+            color: #FCCC13;
+            position: sticky;
+            top: 60px;
+            right: 20px;
+            align-self: flex-start;
+        }
+
+        .summary h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .summary p {
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        .checkout-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .checkout-button:hover {
+            background-color: #218838;
+        }
+
+        .gif-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .gif-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: opacity(0.9); /* Adjust the transparency */
         }
     </style>
 </head>
@@ -78,15 +201,16 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
-            <li><a href="/users">Users</a></li>
+            <!-- <li><a href="/users">Users</a></li> -->
             <li><a href="/baskets">Baskets</a></li>
             <li><a href="/favorites">Favorites</a></li>
         </ul>
     </nav>
     <div class="container">
-        <h1>Basket</h1>
         <div class="basket-list">
+            <% let totalCount = 0; let totalPrice = 0; %>
             <% baskets.forEach(basket => { %>
+                <% totalCount += basket.quantity; totalPrice += basket.price * basket.quantity; %>
                 <div class="card">
                     <h3><%= basket.name %></h3>
                     <p>Description: <%= basket.description %></p>
@@ -95,9 +219,22 @@
                     <p>Price: $<%= basket.price %></p>
                     <p>Quantity: <%= basket.quantity %></p>
                     <img src="<%= basket.imageUrl %>" alt="<%= basket.name %> Image">
-                    <button class="delete-button" onclick="removeFromBasket('<%= basket.basketId %>')">Remove</button>
+                    <form action="/baskets/<%= basket.id %>" method="post">
+                        <input type="number" name="quantity" value="<%= basket.quantity %>" min="1" required>
+                        <button type="submit" class="update-button"><i class="fas fa-check"></i></button>
+                        <button type="button" class="delete-button" onclick="removeFromBasket('<%= basket.basketId %>')"><i class="fas fa-trash-alt"></i></button>
+                    </form>
                 </div>
             <% }) %>
+        </div>
+        <div class="summary">
+            <div class="gif-container">
+                <img src="/200w-unscreen.gif" alt="Car GIF">
+            </div>
+            <h2>Summary</h2>
+            <p>Total Count: <%= totalCount %> items</p>
+            <p>Total Price: $<%= totalPrice.toFixed(2) %></p>
+            <button class="checkout-button">Proceed to Checkout</button>
         </div>
     </div>
 

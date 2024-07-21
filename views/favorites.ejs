@@ -6,44 +6,84 @@
     <title>Favorites</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap" rel="stylesheet"> <!-- Google Font -->
     <style>
+        body {
+            background-color: #1C3A3E;
+            color: #F0EADE;
+            font-family: 'Rubik 80s Fade', cursive;
+            margin: 0;
+            padding: 0;
+            overflow: auto; /* Ensure page is scrollable */
+        }
+
+        .navbar {
+            background-color: #4F1025;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .navbar a {
+            color: #FCCC13;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.5rem; 
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #f4c273;
+        }
+
         .container {
+            margin-top: 60px; /* Adjust for fixed navbar */
             padding: 20px;
-            text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
         .favorites-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            flex: 1;
         }
 
         .card {
-            background-color: #fff;
-            border: 1px solid #ccc;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
             border-radius: 10px;
             margin: 15px;
             padding: 20px;
             width: 250px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: left;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
 
         .card:hover {
             transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         .card h3 {
-            font-size: 1.2em;
+            font-size: 1em;
             color: #333;
             margin-bottom: 10px;
+            font-family: 'Rubik 80s Fade', cursive;
         }
 
         .card p {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #666;
             margin-bottom: 10px;
+            font-family: 'Rubik 80s Fade', cursive;
         }
 
         .card img {
@@ -52,26 +92,84 @@
             margin-bottom: 10px;
         }
 
-        .card button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
         .delete-button {
-            background-color: #f44336;
-            color: white;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #f44336;
         }
 
         .delete-button:hover {
-            background-color: #d32f2f;
+            color: #d32f2f;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar ul li {
+            float: left;
+        }
+
+        .navbar ul li a {
+            display: block;
+            color: #FCCC13;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #960E1A;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const basketForms = document.querySelectorAll('.basket-form');
+            basketForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const productId = form.dataset.productId;
+                    const quantity = form.querySelector('input[name="quantity"]').value;
+                    fetch(`/baskets/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ quantity }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '<p class="message">Item added to basket</p>';
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+
+        const removeFromFavorite = async (id) => {
+            const response = await fetch(`/favorites/${id}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Failed to remove product from favorites');
+            }
+        }
+    </script>
 </head>
 <body>
     <nav>
@@ -85,6 +183,7 @@
     </nav>
     <div class="container">
         <h1>Favorites</h1>
+        <div id="message-container"></div>
         <div class="favorites-list">
             <% favorites.forEach(favorite => { %>
                 <div class="card">
@@ -94,24 +193,14 @@
                     <p>Category: <%= favorite.category %></p>
                     <p>Price: $<%= favorite.price %></p>
                     <img src="<%= favorite.imageUrl %>" alt="<%= favorite.name %> Image">
-                    <button class="delete-button" onclick="removeFromFavorite('<%= favorite.favoriteId %>')">Remove</button>
+                    <form class="basket-form" data-product-id="<%= favorite.id %>" style="display:inline;">
+                        <input type="number" name="quantity" value="1" min="1" required>
+                        <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
+                        <button type="button" class="delete-button" onclick="removeFromFavorite('<%= favorite.favoriteId %>')"><i class="fas fa-trash-alt"></i></button>
+                    </form>
                 </div>
             <% }) %>
         </div>
     </div>
-
-    <script>
-        const removeFromFavorite = async (id) => {
-            const response = await fetch(`/favorites/${id}`, {
-                method: "DELETE"
-            });
-
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Failed to remove product from favorites');
-            }
-        }
-    </script>
 </body>
 </html>
