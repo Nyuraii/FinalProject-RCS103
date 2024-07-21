@@ -6,6 +6,7 @@
     <title>Products</title>
     <link rel="stylesheet" href="/styles.css"> 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
     <style>
         .card-img-top {
             height: 250px;
@@ -42,7 +43,74 @@
         h1, h2 {
             color: #112C33;
         }
+        
+        .heart-button {
+            background: none;
+            border: none;
+            color: #ff0000;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .basket-button {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .message {
+            color: green;
+            font-weight: bold;
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const favoriteForms = document.querySelectorAll('.favorite-form');
+            favoriteForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const productId = form.dataset.productId;
+                    fetch(`/favorites/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({}),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '';
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+
+            const basketForms = document.querySelectorAll('.basket-form');
+            basketForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const productId = form.dataset.productId;
+                    const quantity = form.querySelector('input[name="quantity"]').value;
+                    fetch(`/baskets/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ quantity }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '';
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="navbar">
@@ -102,6 +170,7 @@
 
         <h2>Product List</h2>
         <div class="row">
+            <div id="message-container"></div>
             <% products.forEach(product => { %>
                 <div class="col-md-4 mb-4">
                     <div class="card">
@@ -113,12 +182,12 @@
                             <p class="card-text">Category: <%= product.category %></p>
                             <p class="card-text">Price: $<%= product.price %></p>
                             <% if (user) { %>
-                                <form action="/favorites/<%= product.id %>" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-secondary">Add to Favorites</button>
+                                <form class="favorite-form" data-product-id="<%= product.id %>" style="display:inline;">
+                                    <button type="submit" class="heart-button"><i class="fas fa-heart"></i></button>
                                 </form>
-                                <form action="/baskets/<%= product.id %>" method="post" style="display:inline;">
+                                <form class="basket-form" data-product-id="<%= product.id %>" style="display:inline;">
                                     <input type="number" name="quantity" value="1" min="1" required>
-                                    <button type="submit" class="btn btn-primary">Add to Basket</button>
+                                    <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
                                 </form>
                             <% } %>
                             <% if (user && user.username === 'admin') { %>

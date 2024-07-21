@@ -1,11 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #112C33;
+            color: #F0EADE;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+            position: relative;
+        }
+
+        .container {
+            background-color: rgba(28, 58, 62, 0.8); /* Slightly transparent background */
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative; /* Ensure proper stacking context */
+            z-index: 2;
+        }
+
+        .container h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 2.5rem;
+            color: #FCCC13;
+            margin-bottom: 2rem;
+        }
+
+        .container p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .background-gif {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    z-index: 1; /* Behind the container */
+    opacity: 0.5; /* Adjusted transparency */
+}
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            background-color: #112C33;
+            border: 2px solid #FCCC13;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content {
+            position: relative;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .profile-btn {
+            background-color: #FCCC13;
+            color: #112C33;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .profile-btn:hover {
+            background-color: #f4c273;
+        }
+    </style>
 </head>
 <body>
-    <h1>Profile</h1>
-    <p>Username: <%= user.username %></p>
-    <p>Email: <%= user.email %></p>
+    <div id="backgroundGif" class="background-gif"></div>
+    <div class="container">
+        <h1>Profile</h1>
+        <p>Username: <%= user.username %></p>
+        <p>Email: <%= user.email %></p>
+        <button class="profile-btn" onclick="goHome()">Go Back to Home</button>
+    </div>
+    <div id="homeModal" class="modal">
+        <div class="modal-content">
+            <img id="modalGif" src="" alt="Profile Pop-up GIF" style="width: 100%; border-radius: 10px;">
+            <button class="profile-btn" onclick="redirectToHome()">Home</button>
+        </div>
+    </div>
+    <script>
+       const gifs = [
+            "https://media2.giphy.com/media/r963bkXmjEV4Q/giphy.gif?cid=6c09b95254ccxkwj9x6qe5qvclpl9vezgilic5qqr4nwabpr&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+            "https://media4.giphy.com/media/SWN6nYgyodVKw/giphy.gif?cid=6c09b952oh4sd5rbledxt4th0b92j411vu2ginastjkf8jxv&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+            "https://78.media.tumblr.com/6faf67a08a2b5dc2867b670b2206a21d/tumblr_p169fwmeCT1rfd7lko1_500.gif",
+            "https://i.gifer.com/3P6H.gif",
+            "https://media0.giphy.com/media/TFxYl2lYJEu9kY1lEb/giphy.gif?cid=6c09b952cxdx3ube4b8rku442tro8kz92io1kp8etv4z4s1p&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+            "https://i.pinimg.com/originals/2b/c6/17/2bc617897ddafc22138c425cf1c575da.gif",
+            "https://media0.giphy.com/media/ghXSaacPodnRm/giphy.gif?cid=6c09b952f1ras4qcsk8hiuxosw0gdauzkwpzo0e2zmj6y2n2&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g",
+            "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa05a2bee-4aa7-4df9-becb-4afece09bcb0_500x260.gif",
+            "https://i.pinimg.com/originals/0c/64/ee/0c64ee12f31cab31f16643568cd457a1.gif",
+            "https://64.media.tumblr.com/18050abcb64fcbedc1f82ad8916e5ca1/93789e2e0b1aef4c-a2/s540x810/7c912987f7f8f4f58a89088b8d347e9d0b3028c6.gif",
+            "https://media1.popsugar-assets.com/files/thumbor/lD9X31G_ymYKJuuiRh4XEkLAdxs=/fit-in/480x312/top/filters:format_auto():upscale()/2014/12/03/068/n/1922283/1cdce6946b49c3c8_tumblr_m2wpyrkbzo1qgcra2o1_500.gif",
+            "https://media0.giphy.com/media/xUySTNgybuf4GBCjdK/giphy.gif",
+            "https://akns-images.eonline.com/eol_images/Entire_Site/2017726/rs_500x244-170826123246-500-macaulay-culkin-home-alone-2-082617.gif?fit=around%7C500:244&output-quality=90&crop=500:244;center,top",
+            "https://25.media.tumblr.com/b4f2ffad5330697e7658f9bff7fa725a/tumblr_n2jgg6qM5h1qghl49o1_500.gif",
+            "https://media3.giphy.com/media/l3fZID6Z1JGasRtfi/giphy.gif?cid=6c09b952je8178677c6kvfyw7tl9kbrhiy2dtisjnsr3l64l&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g",
+            "https://media4.giphy.com/media/l3fZXV7D6JjytIR7a/giphy.gif?cid=6c09b952ff6cfhj9f2dprzvxex5bcdb19fk8bpzruseqy97l&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g",
+            "https://64.media.tumblr.com/c4bf5e75e96641a8413e38a4e0ad1d10/tumblr_mqzkdyyq2O1rv2z4yo7_r1_500.gif"
+        ];
+
+        function getRandomGif() {
+            const randomIndex = Math.floor(Math.random() * gifs.length);
+            return gifs[randomIndex];
+        }
+
+        function goHome() {
+            document.getElementById('homeModal').style.display = 'block';
+        }
+
+        function redirectToHome() {
+            window.location.href = '/';
+        }
+
+        // Set random GIFs for background and modal
+        document.getElementById('backgroundGif').style.backgroundImage = `url(${getRandomGif()})`;
+        document.getElementById('modalGif').src = getRandomGif();
+    </script>
 </body>
 </html>
