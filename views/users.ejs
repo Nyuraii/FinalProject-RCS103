@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Users</title>
+    <style>
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .user-form {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+        }
+
+        .user-form h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .user-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .user-form button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .user-form button:hover {
+            background-color: #45a049;
+        }
+
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 15px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #ffa500;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background-color: #e69500;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/baskets">Baskets</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Users</h1>
+        <div class="user-form">
+            <h2>Add New User</h2>
+            <form id="userForm">
+                <input type="text" name="name" placeholder="User Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <button class="add-button" type="submit">Add User</button>
+            </form>
+        </div>
+        <div class="user-list">
+            <% users.forEach(user => { %>
+                <div class="card">
+                    <h3><%= user.name %></h3>
+                    <p>Email: <%= user.email %></p>
+                    <button class="edit-button" onclick="editUser('<%= user.id %>')">Edit</button>
+                    <button class="delete-button" onclick="deleteUser('<%= user.id %>')">Delete</button>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector("#userForm").addEventListener("submit", async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.target)
+            const newUser = {
+                name: formData.get("name"),
+                email: formData.get("email")
+            }
+
+            const response = await fetch("/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newUser)
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to add user')
+            }
+        })
+
+        const deleteUser = async (id) => {
+            const response = await fetch(`/users/${id}`, {
+                method: "DELETE"
+            })
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                alert('Failed to delete user')
+            }
+        }
+
+        const editUser = async (id) => {
+            // Function to handle user editing, could open a modal or redirect to an edit page
+            alert('Edit user functionality not implemented yet.')
+        }
+    </script>
+</body>
+</html>

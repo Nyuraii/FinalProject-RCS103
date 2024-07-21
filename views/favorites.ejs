@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #112C33;
+            color: #F0EADE;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 0;
+            overflow: auto; /* Ensure page is scrollable */
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        nav ul li {
+            float: left;
+        }
+
+        nav ul li a {
+            display: block;
+            color: #FCCC13;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            background-color: #960E1A;
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust for fixed navbar */
+            padding: 20px;
+            text-align: center;
+        }
+
+        .favorites-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            margin: 15px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .card form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card form input[type="number"] {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .basket-button,
+        .delete-button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .basket-button {
+            color: #007bff;
+        }
+
+        .basket-button:hover {
+            color: #0056b3;
+        }
+
+        .delete-button {
+            color: #f44336;
+        }
+
+        .delete-button:hover {
+            color: #d32f2f;
+        }
+    </style>
+    <script>
+        async function addToBasket(favoriteId, quantity) {
+            try {
+                const response = await fetch(`/baskets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ favoriteId, quantity }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Item added to basket');
+                } else {
+                    alert('Failed to add item to basket');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function removeFromFavorite(id) {
+            try {
+                const response = await fetch(`/favorites/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    document.getElementById(`favorite-item-${id}`).remove();
+                } else {
+                    alert('Failed to remove item from favorites');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <% if (user) { %>
+                <li><a href="/favorites">Favorites</a></li>
+                <li><a href="/baskets">Basket</a></li>
+                <li><a href="/users/profile">Profile</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/users">Users</a></li>
+                <% } %>
+                <li><a href="/users/logout">Logout</a></li>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Favorites</h1>
+        <div class="favorites-list">
+            <% favorites.forEach(favorite => { %>
+                <div class="card" id="favorite-item-<%= favorite.favoriteId %>">
+                    <h3><%= favorite.name %></h3>
+                    <p>Description: <%= favorite.description %></p>
+                    <p>Stock: <%= favorite.stock %></p>
+                    <p>Category: <%= favorite.category %></p>
+                    <p>Price: $<%= favorite.price %></p>
+                    <img src="<%= favorite.imageUrl %>" alt="<%= favorite.name %> Image">
+                    <form onsubmit="event.preventDefault(); addToBasket('<%= favorite.favoriteId %>', document.getElementById('quantity-<%= favorite.favoriteId %>').value);">
+                        <input type="number" id="quantity-<%= favorite.favoriteId %>" name="quantity" value="1" min="1" required>
+                        <button type="submit" class="basket-button"><i class="fas fa-shopping-basket"></i></button>
+                        <button type="button" class="delete-button" onclick="removeFromFavorite('<%= favorite.favoriteId %>')"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</body>
+</html>

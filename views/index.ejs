@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Movie Merchandise</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #112C33;
+            color: #F0EADE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #4F1025;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar li {
+            margin-right: 10px;
+        }
+
+        .navbar a {
+            color: #FCCC13;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #f4c273;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: url('IMAGE_URL_HERE') no-repeat center center/cover; /* Replace IMAGE_URL_HERE */
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #E1DA55;
+            text-shadow: 2px 2px #4E5021;
+        }
+
+        .section {
+            margin: 2rem 0;
+        }
+
+        .section h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #f4c273;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: #4E5021;
+            color: #E6DBCE;
+            border: 1px solid #F1EFE2;
+            padding: 1rem;
+            margin: 1rem;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            transition: transform 0.3s;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-bottom: 2px solid #F1EFE2;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            color: #E1DA55;
+        }
+
+        footer {
+            background-color: #4F1025;
+            padding: 1rem;
+            text-align: center;
+            color: #F0EADE;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .footer-bottom {
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" style="color: #FCCC13; text-decoration: none;">
+            <h1 style="color: inherit;">Retro Movie Merchandise</h1>
+        </a>
+        <ul>
+            <li><a href="/products">Products</a></li>
+            <% if (user) { %>
+                <li><a href="/favorites">Favorites</a></li>
+                <li><a href="/basket">Basket</a></li>
+                <li><a href="/users/profile">Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                    <!-- <li><a href="/users">Users</a></li> -->
+                <% } %>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+                <li><a href="/users/register">Register</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="hero">
+            <h1>Welcome to Retro Movie Merchandise</h1>
+        </div>
+        <div class="section">
+            <h2>Featured Movies</h2>
+            <div class="card">
+                <img src="https://s3.amazonaws.com/nightjarprod/content/uploads/sites/4/2018/07/09170404/breakfastclub_poster.jpg" alt="...">
+                <h3>The Breakfast Club</h3>
+                <p>Everyone is different.</p>
+            </div>
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/d/d2/Back_to_the_Future.jpg" alt="...">
+                <h3>Back to the Future</h3>
+                <p>If we can identify our mistakes and our limitations, we can correct them and improve ourselves.</p>
+            </div>
+            <div class="card">
+                <img src="https://images.moviesanywhere.com/34f4f25b50973b8fe2b197c8a8a6e3a5/1a9ea9c0-fb38-439b-977e-40b6fe52a006.jpg" alt="...">
+                <h3>E.T.</h3>
+                <p>Accepting others who are different.</p>
+            </div>
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/M/MV5BYmU1NDRjNDgtMzhiMi00NjZmLTg5NGItZDNiZjU5NTU4OTE0XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg" alt="The Empire Strikes Back">
+                <h3>The Empire Strikes Back</h3>
+                <p>The battle between the Empire and the Rebel Alliance continues.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://musicart.xboxlive.com/7/71325100-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080" alt="Return of the Jedi">
+                <h3>Return of the Jedi</h3>
+                <p>The final battle to defeat the Galactic Empire.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://lumiere-a.akamaihd.net/v1/images/phantom-menace-ferguson-onesheet-withacolyte_594ea745.jpeg?region=0,0,731,1080" alt="Star Wars: Episode I – The Phantom Menace">
+                <h3>Star Wars: Episode I – The Phantom Menace</h3>
+                <p>The beginning of the Star Wars saga, introducing young Anakin Skywalker.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/3/32/Star_Wars_-_Episode_II_Attack_of_the_Clones_%28movie_poster%29.jpg" alt="Star Wars: Episode II – Attack of the Clones">
+                <h3>Star Wars: Episode II – Attack of the Clones</h3>
+                <p>The Republic faces the threat of the Separatists.</p>
+            </div>
+            
+
+
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/I/61wNEQf481L._AC_UF894,1000_QL80_.jpg" alt="The Goonies">
+                <h3>The Goonies</h3>
+                <p>Adventure and friendship in the quest for pirate treasure.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://www.sonypictures.com/sites/default/files/styles/max_560x840/public/title-key-art/ghostbusters_onesheet_1400x2100.png?itok=o0LT09zD" alt="Ghostbusters">
+                <h3>Ghostbusters</h3>
+                <p>Who you gonna call? Ghostbusters!</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://www.tallengestore.com/cdn/shop/products/JurassicPark-StevenSpielberg-HollywoodMovieHandDrawnPoster_b1f42feb-1257-4239-90dd-e9a8f501f14f.jpg?v=1648215348" alt="Jurassic Park">
+                <h3>Jurassic Park</h3>
+                <p>A thrilling adventure of humans coexisting with dinosaurs.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://ridgefieldplayhouse.org/wp-content/uploads/2022/06/RPH-DIRTY-DANCING-550x800-2.png" alt="Dirty Dancing">
+                <h3>Dirty Dancing</h3>
+                <p>Nobody puts Baby in a corner.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://hcgart.com/cdn/shop/products/RobertBrunoSavingPriv.png?v=1571606661" alt="Saving Private Ryan">
+                <h3>Saving Private Ryan</h3>
+                <p>A powerful tale of courage and sacrifice in World War II.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/I/81x1-7zDMsL._AC_UF1000,1000_QL80_.jpg">
+                <h3>The Lion King</h3>
+                <p>An epic tale of destiny and the circle of life.</p>
+            </div>
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg" alt="The Silence of the Lambs">
+                <h3>The Silence of the Lambs</h3>
+                <p>A chilling psychological thriller with Hannibal Lecter.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://musicart.xboxlive.com/7/6b221200-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080" alt="Indiana Jones and the Last Crusade">
+                <h3>Indiana Jones and the Last Crusade</h3>
+                <p>Indy's adventure to find the Holy Grail.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://www.sonypictures.com/sites/default/files/styles/max_560x840/public/title-key-art/Jumanji_onesheet_rating_1.jpg?itok=Y0PEK8IA" alt="Jumanji">
+                <h3>Jumanji</h3>
+                <p>A magical board game unleashes wild adventures.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" alt="Forrest Gump">
+                <h3>Forrest Gump</h3>
+                <p>Life is like a box of chocolates...</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/M/MV5BZmUzNjYzZDEtMWQ1Ny00OGIxLTk4MTktMzU5NTZmZjk5MTQyXkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_QL75_UY281_CR0,0,190,281_.jpg" alt="Star Trek V: The Final Frontier">
+                <h3>Star Trek V: The Final Frontier</h3>
+                <p>The crew's quest for the ultimate knowledge.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/M/MV5BMzFkM2YwOTQtYzk2Mi00N2VlLWE3NTItN2YwNDg1YmY0ZDNmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg">
+                <h3>Home Alone</h3>
+                <p>A young boy defends his home from burglars.</p>
+            </div>
+
+        <div class="section">
+            <h2>About Us</h2>
+            <p>We specialize in selling iconic merchandise from the most beloved movies of the 80s and 90s. From classic action figures to rare collector's items, we have it all!</p>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Retro Movie Merchandise. All rights reserved.</p>
+            <p>Contact Us: info@retromoviemerchandise.com</p>
+        </div>
+    </footer>
+   
+    <script>
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+            setTimeout(closePopup, 3000); // Automatically close after 3 seconds
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Show the pop-up if there's an error message
+         if (typeof error !== 'undefined' && error) { 
+            showPopup();
+       } 
+    </script>
+</body>
+</html>

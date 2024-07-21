@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap" rel="stylesheet"> <!-- Google Font -->
+    <style>
+        body {
+            background-color: #1C3A3E;
+            color: #F0EADE;
+            font-family: 'Rubik 80s Fade', cursive;
+            margin: 0;
+            padding: 0;
+            overflow: auto; /* Ensure page is scrollable */
+        }
+
+        .navbar {
+            background-color: #4F1025;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .navbar a {
+            color: #FCCC13;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.5rem; 
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #f4c273;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: #4F1025;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar ul li {
+            float: left;
+        }
+
+        .navbar ul li a {
+            display: block;
+            color: #FCCC13;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #960E1A;
+        }
+
+        .container {
+            margin-top: 70px; /* Adjust for fixed navbar */
+            padding: 20px;
+        }
+
+        h1, h2 {
+            font-family: 'Rubik 80s Fade', cursive;
+            color: #FCCC13;
+            text-align: center;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-family: 'Rubik 80s Fade', cursive;
+        }
+
+        .btn {
+            font-family: 'Rubik 80s Fade', cursive;
+        }
+
+        .table {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #1C3A3E;
+        }
+
+        .table th, .table td {
+            font-family: 'Rubik 80s Fade', cursive;
+            color: #1C3A3E;
+        }
+
+        .logout-section {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            color: green;
+            font-weight: bold;
+        }
+
+        .edit-button,
+        .delete-button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .edit-button {
+            color: #007bff;
+        }
+
+        .edit-button:hover {
+            color: #0056b3;
+        }
+
+        .delete-button {
+            color: #f44336;
+        }
+
+        .delete-button:hover {
+            color: #d32f2f;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const productForm = document.querySelector('form[action="/admin/products"]');
+            productForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const formData = new FormData(productForm);
+                const productData = {};
+                formData.forEach((value, key) => {
+                    productData[key] = value;
+                });
+                fetch('/admin/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = '<p class="message">Product added successfully</p>';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+
+            const userForm = document.querySelector('form[action="/admin/users"]');
+            userForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const formData = new FormData(userForm);
+                const userData = {};
+                formData.forEach((value, key) => {
+                    userData[key] = value;
+                });
+                fetch('/admin/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = '<p class="message">User added successfully</p>';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+
+            const editForms = document.querySelectorAll('form[action*="/admin/users/"]');
+            editForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    const userData = {};
+                    formData.forEach((value, key) => {
+                        userData[key] = value;
+                    });
+                    const userId = form.action.split('/').pop().split('?')[0];
+                    fetch(`/admin/users/${userId}?_method=PUT`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '<p class="message">User updated successfully</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+
+            const deleteForms = document.querySelectorAll('form[action*="/admin/users/"]');
+            deleteForms.forEach(form => {
+                const deleteButton = form.querySelector('.btn-danger');
+                deleteButton.addEventListener('click', event => {
+                    event.preventDefault();
+                    const userId = form.action.split('/').pop().split('?')[0];
+                    fetch(`/admin/users/${userId}?_method=DELETE`, {
+                        method: 'POST',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = '<p class="message">User deleted successfully</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+            <li><a href="/baskets">Basket</a></li>
+            <% if (user) { %>
+                <li><a href="/users/profile">Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+                <% if (user.username === 'admin') { %>
+                    <li><a href="/admin">Admin</a></li>
+                <% } %>
+            <% } else { %>
+                <li><a href="/users/login">Login</a></li>
+                <li><a href="/users/register">Register</a></li>
+            <% } %>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="logout-section">
+            <form action="/users/logout" method="get">
+                <button type="submit" class="btn logout-button">Logout</button>
+            </form>
+        </div>
+        <h1>Admin Dashboard</h1>
+        <div id="message-container"></div>
+        
+        <div class="form-section">
+            <h2>Manage Products</h2>
+            <form action="/admin/products" method="post" class="mb-4">
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" id="description" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" class="form-control" id="stock" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" class="form-control" id="category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="imageUrl">Image URL:</label>
+                    <input type="text" class="form-control" id="imageUrl" name="imageUrl" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Product</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Manage Users</h2>
+            <form action="/admin/users" method="post">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add User</button>
+            </form>
+        </div>
+
+        <h2>User List</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.email %></td>
+                        <td>
+                            <form class="edit-form" data-user-id="<%= user._id %>" style="display:inline;">
+                                <input type="text" name="username" value="<%= user.username %>" required class="form-control">
+                                <input type="email" name="email" value="<%= user.email %>" required class="form-control">
+                                <button type="submit" class="edit-button"><i class="fas fa-edit"></i></button>
+                            </form>
+                            <button class="delete-button" onclick="deleteUser('<%= user._id %>')"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const deleteUser = async (id) => {
+            const response = await fetch(`/admin/users/${id}?_method=DELETE`, {
+                method: "POST"
+            });
+
+            if (response.ok) {
+                document.getElementById('message-container').innerHTML = '<p class="message">User deleted successfully</p>';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                alert('Failed to delete user');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const editForms = document.querySelectorAll('.edit-form');
+            editForms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+                    const userId = form.dataset.userId;
+                    const formData = new FormData(form);
+                    const userData = {};
+                    formData.forEach((value, key) => {
+                        userData[key] = value;
+                    });
+                    fetch(`/admin/users/${userId}?_method=PUT`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('message-container').innerHTML = '<p class="message">User updated successfully</p>';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
