@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="/styles.css"> <!-- Adjust the path as needed -->
+    <link rel="stylesheet" href="/styles.css"> 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .card-img-top {
@@ -46,12 +46,14 @@
 </head>
 <body>
     <div class="navbar">
-        <h1>Retro Movie Merchandise</h1>
+        <a href="/" style="color: #FCCC13; text-decoration: none;">
+            <h1 style="color: inherit;">Retro Movie Merchandise</h1>
+        </a>
         <ul>
             <li><a href="/products">Products</a></li>
-            <li><a href="/favorites">Favorites</a></li>
-            <li><a href="/baskets">Basket</a></li>
             <% if (user) { %>
+                <li><a href="/favorites">Favorites</a></li>
+                <li><a href="/baskets">Basket</a></li>
                 <li><a href="/users/profile">Profile</a></li>
                 <li><a href="/users/logout">Logout</a></li>
                 <% if (user.username === 'admin') { %>
